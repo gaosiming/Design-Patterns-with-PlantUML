@@ -1,0 +1,64 @@
+' 该模式适用场景：
+' 如果我们想为一个现有的类增加新功能，不得不考虑几个事情：
+'     1、新功能会不会与现有功能出现兼容性问题？
+'     2、以后会不会再需要添加？
+'     3、如果类不允许修改代码怎么办？
+' 面对这些问题，最好的解决方法就是使用访问者模式，
+' 访问者模式适用于数据结构相对稳定的系统，把数据结构(Element结构不变)和算法(应用在Element上的操作)解耦.
+
+@startuml
+skinparam classAttributeIconSize 0
+
+package "class Visitor(访问者模式)" #DDDDDD {
+    class Visitor<< (I,#FF7700) abstract>>
+    {
+    +visitElementA(ElementA):void
+    +visitElementB(ElementB):void
+    }
+    note top of Visitor: 访问者接口或抽象类
+
+    class ConcreteVisitorA
+    {
+    +visitElementA(ElementA):void
+    +visitElementB(ElementB):void
+    }
+
+    class ConcreteVisitorB
+    {
+    +visitElementA(ElementA):void
+    +visitElementB(ElementB):void
+    }
+
+    class Element<< (I,#FF7700) abstract>>
+    {
+    +accept(Visitor)
+    }
+    note top of Element: 元素接口或抽象类
+
+    class ElementA
+    {
+    +accept(Visitor)
+    +operationA()
+    }
+
+    class ElementB
+    {
+    +accept(Visitor)
+    +operationB()
+    }
+
+    class ObjectStructure
+    note bottom of ObjectStructure: 管理元素集合的对象结构
+
+    class Client
+
+    Visitor <|-- ConcreteVisitorA
+    Visitor <|-- ConcreteVisitorB
+    Element <|-- ElementA
+    Element <|-- ElementB
+    Element --o ObjectStructure
+    Client ..> Visitor:<<use>>
+    Client ..> ObjectStructure:<<use>>
+
+}
+@enduml
